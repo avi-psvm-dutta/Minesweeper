@@ -14,36 +14,35 @@ import gui.*;
 
 public class Minesweeper
 {
-	private Grid grid;
-	private Console game;
+	private Grid grid; //active grid
+	private Console game; //active window
 	
-	public Minesweeper()
+	public Minesweeper() //constructor
 	{
-		game = new Console();
-		grid = new Grid();
+		game = new Console(); //initialize window
+		grid = new Grid(); //initialize grid
 		
-		game.newGame.addActionListener(new NewGame());
+		game.newGame.addActionListener(new NewGame()); //make the New Game pull down menu item clickable
 		
 		for(int rowIndex = 0; rowIndex < Grid.height; rowIndex ++)
 		{
 			for(int colIndex = 0; colIndex < Grid.width; colIndex ++)
 			{
-				game.buttons[rowIndex][colIndex].addActionListener(new LeftClick(rowIndex, colIndex));
-				game.buttons[rowIndex][colIndex].addMouseListener(new RightClick(rowIndex, colIndex));
+				game.buttons[rowIndex][colIndex].addActionListener(new LeftClick(rowIndex, colIndex)); //add a left click listener for each button
+				game.buttons[rowIndex][colIndex].addMouseListener(new RightClick(rowIndex, colIndex)); //add a right click listener for each button
 			}
 		}
 		
-		game.customize.addActionListener(new CustomizeConsole(game));
+		game.customize.addActionListener(new CustomizeConsole(game));//make the Customize pull down menu item clickable
 	}
 	
 	public static void main(String[] args)
 	{
-		new Minesweeper();
+		new Minesweeper(); //initialize game
 	}
 	
 	private class NewGame implements ActionListener
 	{
-
 		@Override
 		public void actionPerformed(ActionEvent arg0)
 		{
@@ -51,13 +50,13 @@ public class Minesweeper
 			{
 				for(int colIndex = 0; colIndex < Grid.width; colIndex ++)
 				{
-					game.buttons[rowIndex][colIndex].setIcon(null);
-					game.buttons[rowIndex][colIndex].setBackground(Console.buttonColor);
+					game.buttons[rowIndex][colIndex].setIcon(null); //reset all icons of each button
+					game.buttons[rowIndex][colIndex].setBackground(Console.buttonColor); //reset the color of each button
 				}
 			}
 			
-			game.gamePanel.setBackground(null);
-			grid = new Grid();
+			game.gamePanel.setBackground(null); //set background of the game panel to null (from red if lose, from green if win)
+			grid = new Grid(); //initialize a new grid to play with
 		}	
 	}
 	
@@ -73,7 +72,7 @@ public class Minesweeper
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			new Customize(mainWindow);
+			new Customize(mainWindow); //initialize a customize window
 		}
 	}
 	
@@ -87,21 +86,22 @@ public class Minesweeper
 			this.colIndex = colIndex;
 		}
 
+		//method to change the look of all buttons after each move
 		private void update()
 		{
 			for(int row = 0; row < Grid.height; row ++)
 			{
 				for(int col = 0; col < Grid.width; col ++)
 				{
-					if(grid.discoveredSquare[row][col])
+					if(grid.discoveredSquare[row][col]) //current square has been discovered, so change how it looks
 					{
-						if(grid.grid[row][col] == 0)
+						if(grid.grid[row][col] == 0) //0 square
 						{
-							game.buttons[row][col].setIcon(null);
-							game.buttons[row][col].setBackground(new Color(238, 238, 238));
+							game.buttons[row][col].setIcon(null); //remove any old icon
+							game.buttons[row][col].setBackground(new Color(238, 238, 238)); //set the color of the button to white
 						}
 						else
-							game.buttons[row][col].setIcon(new ImageIcon(String.valueOf(grid.grid[row][col]) + ".png"));
+							game.buttons[row][col].setIcon(new ImageIcon(String.valueOf(grid.grid[row][col]) + ".png")); //set the icon as the appropriate image corresponding to the value contained by the square
 					}
 				}
 			}
@@ -110,27 +110,25 @@ public class Minesweeper
 		@Override
 		public void actionPerformed(ActionEvent arg0)
 		{
-			grid.discoveredSquare[rowIndex][colIndex] = true;
+			grid.discoveredSquare[rowIndex][colIndex] = true; //mark the clicked on square as discovered
 			
-			if(grid.grid[rowIndex][colIndex] == -1)
+			if(grid.grid[rowIndex][colIndex] == -1) //the player has clicked on a mine
 			{
-				game.gamePanel.setBackground(new Color(255, 0, 0));
+				game.gamePanel.setBackground(new Color(255, 0, 0)); //change the color of the panel to red
 				for(rowIndex = 0; rowIndex < Grid.height; rowIndex ++)
 					for(colIndex = 0; colIndex < Grid.width; colIndex ++)
-						grid.discoveredSquare[rowIndex][colIndex] = true;
+						grid.discoveredSquare[rowIndex][colIndex] = true; //reveal the entire grid
 				
 				update();
 			}
 
-			if(grid.grid[rowIndex][colIndex] == 0)
+			if(grid.grid[rowIndex][colIndex] == 0) //0 has been clicked on, call the floodfill method
 				grid.floodFill(grid.grid, rowIndex, colIndex);
 			
 			update();
 			
-			if(grid.won())
-			{
-				game.gamePanel.setBackground(new Color(0, 255, 0));
-			}
+			if(grid.won()) //the player has won the game
+				game.gamePanel.setBackground(new Color(0, 255, 0)); //change the color of the panel to green
 		}
 	}
 	
@@ -147,7 +145,7 @@ public class Minesweeper
 		public void mouseClicked(MouseEvent e)
 		{
 			if(e.getButton() == 3)
-				game.buttons[rowIndex][colIndex].setIcon(new ImageIcon("-1.png"));
+				game.buttons[rowIndex][colIndex].setIcon(new ImageIcon("-1.png")); //set the icon of the clicked button to a mine
 		}
 	}
 }

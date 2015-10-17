@@ -21,6 +21,7 @@ public class Grid extends Operate
 	 * stored are marked as -1 which means mine
 	 * */
 
+	//method to place mines into random positions of the grid
 	private void placeMines()
 	{
 		Random minePosition = new Random(); //int to store the random number
@@ -48,7 +49,7 @@ public class Grid extends Operate
 			}
 		}
 	}
-	
+	//method to calculate the number a square holds by counting the number of mines around it
 	private int calculateNumber(int row, int col)
 	{
 		int count = 0;
@@ -81,6 +82,7 @@ public class Grid extends Operate
 		return count;
 	}
 	
+	//put the numbers into the grid
 	private void placeNumbers()
 	{
 		for(int rowIndex = 0; rowIndex < height; rowIndex++)
@@ -91,29 +93,9 @@ public class Grid extends Operate
 	
 	public Grid() //constructor to initialize values of the grid
 	{
-		
 		grid = new int[height][width];
-		for(int rowIndex = 0; rowIndex < height; rowIndex++)
-		{
-			for(int colIndex = 0; colIndex < width; colIndex++)
-			{
-				grid[rowIndex][colIndex] = 0;
-				discoveredSquare[rowIndex][colIndex] = false;
-			}
-		}
 		
 		placeMines();
 		placeNumbers();
 	}
-	
-	public boolean won() //returns true if you've clicked on everything apart from all the mines
-	{
-		int undiscoveredCount = 0;
-		for(int rowIndex = 0; rowIndex < height; rowIndex++)
-			for(int colIndex = 0; colIndex < height; colIndex++)
-				if(!discoveredSquare[rowIndex][colIndex])
-					undiscoveredCount ++;
-		
-		return undiscoveredCount == mines ? true : false;
-	}	  
 }
