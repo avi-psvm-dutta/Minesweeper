@@ -122,7 +122,7 @@ public class Minesweeper
 				update();
 			}
 
-			if(grid.grid[rowIndex][colIndex] == 0) //0 has been clicked on, call the floodfill method
+			else if(grid.grid[rowIndex][colIndex] == 0) //0 has been clicked on, call the floodfill method
 				grid.floodFill(grid.grid, rowIndex, colIndex);
 			
 			update();
